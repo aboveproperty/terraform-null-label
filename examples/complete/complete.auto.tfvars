@@ -1,6 +1,6 @@
-namespace   = "cp"
+affiliate   = "cp"
 environment = "uw2"
-stage       = "prd"
+region      = "prd"
 name        = "null-label"
 
 delimiter       = ""

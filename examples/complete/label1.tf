@@ -1,13 +1,13 @@
 module "label1" {
   source      = "../../"
-  namespace   = "CloudPosse"
+  affiliate   = "abvprp"
   environment = "UAT"
-  stage       = "build"
-  name        = "Winston Churchroom"
+  region      = "us-east-1"
+  name        = "poseidon"
   attributes  = ["fire", "water", "earth", "air"]
   delimiter   = "-"
 
-  label_order = ["name", "environment", "stage", "attributes"]
+  label_order = ["affiliate", "environment", "region", "name"]
 
   tags = {
     "City"        = "Dublin"
@@ -19,8 +19,8 @@ output "label1" {
   value = {
     id         = module.label1.id
     name       = module.label1.name
-    namespace  = module.label1.namespace
-    stage      = module.label1.stage
+    affiliate  = module.label1.affiliate
+    region     = module.label1.region
     attributes = module.label1.attributes
     delimiter  = module.label1.delimiter
   }

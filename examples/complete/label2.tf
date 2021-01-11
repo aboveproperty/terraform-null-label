@@ -2,7 +2,7 @@ module "label2" {
   source              = "../../"
   context             = module.label1.context
   name                = "Charlie"
-  stage               = "test"
+  region              = "test"
   delimiter           = "+"
   regex_replace_chars = "/[^a-zA-Z0-9-+]/"
 
@@ -22,8 +22,8 @@ output "label2" {
   value = {
     id         = module.label2.id
     name       = module.label2.name
-    namespace  = module.label2.namespace
-    stage      = module.label2.stage
+    affiliate  = module.label2.affiliate
+    region     = module.label2.region
     attributes = module.label2.attributes
     delimiter  = module.label2.delimiter
   }

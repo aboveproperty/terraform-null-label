@@ -1,7 +1,7 @@
 locals {
 
   defaults = {
-    label_order         = ["namespace", "environment", "stage", "name", "attributes"]
+    label_order         = ["affiliate", "environment", "region", "name"]
     regex_replace_chars = "/[^-a-zA-Z0-9]/"
     delimiter           = "-"
     replacement         = ""
@@ -22,9 +22,9 @@ locals {
     # It would be nice to use coalesce here, but we cannot, because it
     # is an error for all the arguments to coalesce to be empty.
     enabled     = var.enabled == null ? var.context.enabled : var.enabled
-    namespace   = var.namespace == null ? var.context.namespace : var.namespace
+    affiliate   = var.affiliate == null ? var.context.affiliate : var.affiliate
     environment = var.environment == null ? var.context.environment : var.environment
-    stage       = var.stage == null ? var.context.stage : var.stage
+    region      = var.region == null ? var.context.region : var.region
     name        = var.name == null ? var.context.name : var.name
     delimiter   = var.delimiter == null ? var.context.delimiter : var.delimiter
     # modules tack on attributes (passed by var) to the end of the list (passed by context)
@@ -42,9 +42,9 @@ locals {
   regex_replace_chars = coalesce(local.input.regex_replace_chars, local.defaults.regex_replace_chars)
 
   name            = lower(replace(coalesce(local.input.name, local.sentinel), local.regex_replace_chars, local.replacement))
-  namespace       = lower(replace(coalesce(local.input.namespace, local.sentinel), local.regex_replace_chars, local.replacement))
+  affiliate       = lower(replace(coalesce(local.input.affiliate, local.sentinel), local.regex_replace_chars, local.replacement))
   environment     = lower(replace(coalesce(local.input.environment, local.sentinel), local.regex_replace_chars, local.replacement))
-  stage           = lower(replace(coalesce(local.input.stage, local.sentinel), local.regex_replace_chars, local.replacement))
+  region          = lower(replace(coalesce(local.input.region, local.sentinel), local.regex_replace_chars, local.replacement))
   delimiter       = local.input.delimiter == null ? local.defaults.delimiter : local.input.delimiter
   label_order     = local.input.label_order == null ? local.defaults.label_order : coalescelist(local.input.label_order, local.defaults.label_order)
   id_length_limit = local.input.id_length_limit == null ? local.defaults.id_length_limit : local.input.id_length_limit
@@ -67,9 +67,9 @@ locals {
   tags_context = {
     # For AWS we need `Name` to be disambiguated since it has a special meaning
     name        = local.id
-    namespace   = local.namespace
+    affiliate   = local.affiliate
     environment = local.environment
-    stage       = local.stage
+    region      = local.region
     attributes  = local.id_context.attributes
   }
 
@@ -77,9 +77,9 @@ locals {
 
   id_context = {
     name        = local.name
-    namespace   = local.namespace
+    affiliate   = local.affiliate
     environment = local.environment
-    stage       = local.stage
+    region      = local.region
     attributes  = lower(replace(join(local.delimiter, local.attributes), local.regex_replace_chars, local.replacement))
   }
 
@@ -102,9 +102,9 @@ locals {
   output_context = {
     enabled             = local.enabled
     name                = local.name
-    namespace           = local.namespace
+    affiliate           = local.affiliate
     environment         = local.environment
-    stage               = local.stage
+    region              = local.region
     delimiter           = local.delimiter
     attributes          = local.attributes
     tags                = local.tags

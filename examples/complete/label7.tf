@@ -1,7 +1,7 @@
 module "label7a" {
   source      = "../../"
   enabled     = true
-  namespace   = "eg"
+  affiliate   = "eg"
   environment = "demo"
   name        = "blue"
   attributes  = ["cluster"]
@@ -24,8 +24,8 @@ output "label7" {
   value = {
     id         = module.label7.id
     name       = module.label7.name
-    namespace  = module.label7.namespace
-    stage      = module.label7.stage
+    affiliate  = module.label7.affiliate
+    region     = module.label7.region
     attributes = module.label7.attributes
     delimiter  = module.label7.delimiter
   }

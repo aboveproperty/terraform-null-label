@@ -13,9 +13,9 @@ output "enabled" {
   description = "True if module is enabled, false otherwise"
 }
 
-output "namespace" {
-  value       = local.enabled ? local.namespace : ""
-  description = "Normalized namespace"
+output "affiliate" {
+  value       = local.enabled ? local.affiliate : ""
+  description = "Normalized affiliate"
 }
 
 output "environment" {
@@ -28,14 +28,14 @@ output "name" {
   description = "Normalized name"
 }
 
-output "stage" {
-  value       = local.enabled ? local.stage : ""
-  description = "Normalized stage"
+output "region" {
+  value       = local.enabled ? local.region : ""
+  description = "Normalized region"
 }
 
 output "delimiter" {
   value       = local.enabled ? local.delimiter : ""
-  description = "Delimiter between `namespace`, `environment`, `stage`, `name` and `attributes`"
+  description = "Delimiter between `affiliate`, `environment`, `region`, `name` and `attributes`"
 }
 
 output "attributes" {

@@ -23,9 +23,9 @@ module "this" {
   version = "0.22.1" // requires Terraform >= 0.12.26
 
   enabled             = var.enabled
-  namespace           = var.namespace
+  affiliate           = var.affiliate
   environment         = var.environment
-  stage               = var.stage
+  region              = var.region
   name                = var.name
   delimiter           = var.delimiter
   attributes          = var.attributes
@@ -43,9 +43,9 @@ module "this" {
 variable "context" {
   type = object({
     enabled             = bool
-    namespace           = string
+    affiliate           = string
     environment         = string
-    stage               = string
+    region              = string
     name                = string
     delimiter           = string
     attributes          = list(string)
@@ -57,9 +57,9 @@ variable "context" {
   })
   default = {
     enabled             = true
-    namespace           = null
+    affiliate           = null
     environment         = null
-    stage               = null
+    region              = null
     name                = null
     delimiter           = null
     attributes          = []
@@ -84,10 +84,10 @@ variable "enabled" {
   description = "Set to false to prevent the module from creating any resources"
 }
 
-variable "namespace" {
+variable "affiliate" {
   type        = string
   default     = null
-  description = "Namespace, which could be your organization name or abbreviation, e.g. 'eg' or 'cp'"
+  description = "affiliate, which could be your organization name or abbreviation, e.g. 'eg' or 'cp'"
 }
 
 variable "environment" {
@@ -96,10 +96,10 @@ variable "environment" {
   description = "Environment, e.g. 'uw2', 'us-west-2', OR 'prod', 'staging', 'dev', 'UAT'"
 }
 
-variable "stage" {
+variable "region" {
   type        = string
   default     = null
-  description = "Stage, e.g. 'prod', 'staging', 'dev', OR 'source', 'build', 'test', 'deploy', 'release'"
+  description = "region, e.g. 'prod', 'staging', 'dev', OR 'source', 'build', 'test', 'deploy', 'release'"
 }
 
 variable "name" {
@@ -112,7 +112,7 @@ variable "delimiter" {
   type        = string
   default     = null
   description = <<-EOT
-    Delimiter to be used between `namespace`, `environment`, `stage`, `name` and `attributes`.
+    Delimiter to be used between `affiliate`, `environment`, `region`, `name` and `attributes`.
     Defaults to `-` (hyphen). Set to `""` to use no delimiter at all.
   EOT
 }
@@ -140,7 +140,7 @@ variable "label_order" {
   default     = null
   description = <<-EOT
     The naming order of the id output and Name tag.
-    Defaults to ["namespace", "environment", "stage", "name", "attributes"].
+    Defaults to ["affiliate", "environment", "region", "name", "attributes"].
     You can omit any of the 5 elements, but at least one must be present.
   EOT
 }
@@ -149,7 +149,7 @@ variable "regex_replace_chars" {
   type        = string
   default     = null
   description = <<-EOT
-    Regex to replace chars with empty string in `namespace`, `environment`, `stage` and `name`.
+    Regex to replace chars with empty string in `affiliate`, `environment`, `region` and `name`.
     If not set, `"/[^a-zA-Z0-9-]/"` is used to remove all characters other than hyphens, letters and digits.
   EOT
 }

@@ -1,7 +1,7 @@
 module "label3c" {
   source              = "../../"
   name                = "Starfish"
-  stage               = "release"
+  region              = "release"
   context             = module.label1.context
   delimiter           = "."
   regex_replace_chars = "/[^-a-zA-Z0-9.]/"
@@ -16,8 +16,8 @@ output "label3c" {
   value = {
     id         = module.label3c.id
     name       = module.label3c.name
-    namespace  = module.label3c.namespace
-    stage      = module.label3c.stage
+    affiliate  = module.label3c.affiliate
+    region     = module.label3c.region
     attributes = module.label3c.attributes
     delimiter  = module.label3c.delimiter
   }

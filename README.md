@@ -29,11 +29,11 @@
 
 Terraform module designed to generate consistent names and tags for resources. Use `terraform-null-label` to implement a strict naming convention.
 
-This module generates names using the following convention by default: `{namespace}-{environment}-{stage}-{name}-{attributes}`.
+This module generates names using the following convention by default: `{affiliate}-{environment}-{region}-{name}-{attributes}`.
 However, it is highly configurable. The delimiter (e.g. `-`) is configurable. Each label item is optional (although you must provide at least one).
-So if you prefer the term `stage` to `environment`
-you can exclude environment and the label `id` will look like `{namespace}-{stage}-{name}-{attributes}`.
-If attributes are excluded but `stage` and `environment` are included, `id` will look like `{namespace}-{environment}-{stage}-{name}`.
+So if you prefer the term `region` to `environment`
+you can exclude environment and the label `id` will look like `{affiliate}-{region}-{name}-{attributes}`.
+If attributes are excluded but `region` and `environment` are included, `id` will look like `{affiliate}-{environment}-{region}-{name}`.
 If you want the attributes in a different order, you can specify that, too, with the `label_order` list.
 You can set a maximum length for the name, and the module will create a unique name that fits within that length.
 
@@ -117,8 +117,8 @@ be overwritten.
 ```hcl
 module "eg_prod_bastion_label" {
   source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=master"
-  namespace  = "eg"
-  stage      = "prod"
+  affiliate  = "eg"
+  region      = "prod"
   name       = "bastion"
   attributes = ["public"]
   delimiter  = "-"
@@ -130,7 +130,7 @@ module "eg_prod_bastion_label" {
 }
 ```
 
-This will create an `id` with the value of `eg-prod-bastion-public` because when generating `id`, the default order is `namespace`, `environment`, `stage`,  `name`, `attributes`
+This will create an `id` with the value of `eg-prod-bastion-public` because when generating `id`, the default order is `affiliate`, `environment`, `region`,  `name`, `attributes`
 (you can override it by using the `label_order` variable, see [Advanced Example 3](#advanced-example-3)).
 
 Now reference the label when creating an instance:
@@ -168,8 +168,8 @@ Here is a more complex example with two instances using two different labels. No
 ```hcl
 module "eg_prod_bastion_abc_label" {
   source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=master"
-  namespace  = "eg"
-  stage      = "prod"
+  affiliate  = "eg"
+  region      = "prod"
   name       = "bastion"
   attributes = ["abc"]
   delimiter  = "-"
@@ -199,8 +199,8 @@ resource "aws_instance" "eg_prod_bastion_abc" {
 
 module "eg_prod_bastion_xyz_label" {
   source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=master"
-  namespace  = "eg"
-  stage      = "prod"
+  affiliate  = "eg"
+  region      = "prod"
   name       = "bastion"
   attributes = ["xyz"]
   delimiter  = "-"
@@ -242,17 +242,17 @@ tags = [
     {
         key = Name,
         propagate_at_launch = 1,
-        value = namespace-stage-name
+        value = affiliate-region-name
     },
     {
-        key = Namespace,
+        key = affiliate,
         propagate_at_launch = 1,
-        value = namespace
+        value = affiliate
     },
     {
-        key = Stage,
+        key = region,
         propagate_at_launch = 1,
-        value = stage
+        value = region
     }
 ]
 ```
@@ -265,8 +265,8 @@ Autoscaling group using propagating tagging below (full example: [autoscalinggro
 ################################
 module "label" {
   source    = "../../"
-  namespace = "cp"
-  stage     = "prod"
+  affiliate = "cp"
+  region     = "prod"
   name      = "app"
 
   tags = {
@@ -337,14 +337,14 @@ as a derivative of that.
 ```hcl
 module "label1" {
   source      = "git::https://github.com/cloudposse/terraform-null-label.git?ref=master"
-  namespace   = "CloudPosse"
+  affiliate   = "CloudPosse"
   environment = "UAT"
-  stage       = "build"
+  region       = "build"
   name        = "Winston Churchroom"
   attributes  = ["fire", "water", "earth", "air"]
   delimiter   = "-"
 
-  label_order = ["name", "environment", "stage", "attributes"]
+  label_order = ["name", "environment", "region", "attributes"]
 
   tags = {
     "City"        = "Dublin"
@@ -356,7 +356,7 @@ module "label2" {
   source    = "git::https://github.com/cloudposse/terraform-null-label.git?ref=master"
   context   = module.label1.context
   name      = "Charlie"
-  stage     = "test"
+  region     = "test"
   delimiter = "+"
 
   tags = {
@@ -368,7 +368,7 @@ module "label2" {
 module "label3" {
   source    = "git::https://github.com/cloudposse/terraform-null-label.git?ref=master"
   name      = "Starfish"
-  stage     = "release"
+  region     = "release"
   context   = module.label1.context
   delimiter = "."
 
@@ -392,8 +392,8 @@ label1 = {
   "delimiter" = "-"
   "id" = "winstonchurchroom-uat-build-fire-water-earth-air"
   "name" = "winstonchurchroom"
-  "namespace" = "cloudposse"
-  "stage" = "build"
+  "affiliate" = "cloudposse"
+  "region" = "build"
 }
 label1_context = {
   "additional_tag_map" = {}
@@ -409,12 +409,12 @@ label1_context = {
   "label_order" = [
     "name",
     "environment",
-    "stage",
+    "region",
     "attributes",
   ]
   "name" = "Winston Churchroom"
-  "namespace" = "CloudPosse"
-  "stage" = "build"
+  "affiliate" = "CloudPosse"
+  "region" = "build"
   "tags" = {
     "City" = "Dublin"
     "Environment" = "Private"
@@ -435,20 +435,20 @@ label1_normalized_context = {
   "label_order" = [
     "name",
     "environment",
-    "stage",
+    "region",
     "attributes",
   ]
   "name" = "winstonchurchroom"
-  "namespace" = "cloudposse"
+  "affiliate" = "cloudposse"
   "regex_replace_chars" = "/[^-a-zA-Z0-9]/"
-  "stage" = "build"
+  "region" = "build"
   "tags" = {
     "Attributes" = "fire-water-earth-air"
     "City" = "Dublin"
     "Environment" = "Private"
     "Name" = "winstonchurchroom-uat-build-fire-water-earth-air"
-    "Namespace" = "cloudposse"
-    "Stage" = "build"
+    "affiliate" = "cloudposse"
+    "region" = "build"
   }
 }
 label1_tags = {
@@ -456,8 +456,8 @@ label1_tags = {
   "City" = "Dublin"
   "Environment" = "Private"
   "Name" = "winstonchurchroom-uat-build-fire-water-earth-air"
-  "Namespace" = "cloudposse"
-  "Stage" = "build"
+  "affiliate" = "cloudposse"
+  "region" = "build"
 }
 label2 = {
   "attributes" = [
@@ -469,8 +469,8 @@ label2 = {
   "delimiter" = "+"
   "id" = "charlie+uat+test+fire+water+earth+air"
   "name" = "charlie"
-  "namespace" = "cloudposse"
-  "stage" = "test"
+  "affiliate" = "cloudposse"
+  "region" = "test"
 }
 label2_context = {
   "additional_tag_map" = {
@@ -489,13 +489,13 @@ label2_context = {
   "label_order" = [
     "name",
     "environment",
-    "stage",
+    "region",
     "attributes",
   ]
   "name" = "Charlie"
-  "namespace" = "CloudPosse"
+  "affiliate" = "CloudPosse"
   "regex_replace_chars" = "/[^a-zA-Z0-9-+]/"
-  "stage" = "test"
+  "region" = "test"
   "tags" = {
     "City" = "London"
     "Environment" = "Public"
@@ -506,8 +506,8 @@ label2_tags = {
   "City" = "London"
   "Environment" = "Public"
   "Name" = "charlie+uat+test+fire+water+earth+air"
-  "Namespace" = "cloudposse"
-  "Stage" = "test"
+  "affiliate" = "cloudposse"
+  "region" = "test"
 }
 label2_tags_as_list_of_maps = [
   {
@@ -536,13 +536,13 @@ label2_tags_as_list_of_maps = [
   },
   {
     "additional_tag" = "yes"
-    "key" = "Namespace"
+    "key" = "affiliate"
     "propagate_at_launch" = "true"
     "value" = "cloudposse"
   },
   {
     "additional_tag" = "yes"
-    "key" = "Stage"
+    "key" = "region"
     "propagate_at_launch" = "true"
     "value" = "test"
   },
@@ -557,8 +557,8 @@ label3 = {
   "delimiter" = "."
   "id" = "starfish.uat.release.fire.water.earth.air"
   "name" = "starfish"
-  "namespace" = "cloudposse"
-  "stage" = "release"
+  "affiliate" = "cloudposse"
+  "region" = "release"
 }
 label3_context = {
   "additional_tag_map" = {}
@@ -574,13 +574,13 @@ label3_context = {
   "label_order" = [
     "name",
     "environment",
-    "stage",
+    "region",
     "attributes",
   ]
   "name" = "Starfish"
-  "namespace" = "CloudPosse"
+  "affiliate" = "CloudPosse"
   "regex_replace_chars" = "/[^-a-zA-Z0-9.]/"
-  "stage" = "release"
+  "region" = "release"
   "tags" = {
     "Animal" = "Rabbit"
     "City" = "Dublin"
@@ -603,13 +603,13 @@ label3_normalized_context = {
   "label_order" = [
     "name",
     "environment",
-    "stage",
+    "region",
     "attributes",
   ]
   "name" = "starfish"
-  "namespace" = "cloudposse"
+  "affiliate" = "cloudposse"
   "regex_replace_chars" = "/[^-a-zA-Z0-9.]/"
-  "stage" = "release"
+  "region" = "release"
   "tags" = {
     "Animal" = "Rabbit"
     "Attributes" = "fire.water.earth.air"
@@ -617,8 +617,8 @@ label3_normalized_context = {
     "Eat" = "Carrot"
     "Environment" = "Private"
     "Name" = "starfish.uat.release.fire.water.earth.air"
-    "Namespace" = "cloudposse"
-    "Stage" = "release"
+    "affiliate" = "cloudposse"
+    "region" = "release"
   }
 }
 label3_tags = {
@@ -628,8 +628,8 @@ label3_tags = {
   "Eat" = "Carrot"
   "Environment" = "Private"
   "Name" = "starfish.uat.release.fire.water.earth.air"
-  "Namespace" = "cloudposse"
-  "Stage" = "release"
+  "affiliate" = "cloudposse"
+  "region" = "release"
 }
 
 ```
@@ -670,16 +670,16 @@ No provider.
 |------|-------------|------|---------|:--------:|
 | additional\_tag\_map | Additional tags for appending to tags\_as\_list\_of\_maps. Not added to `tags`. | `map(string)` | `{}` | no |
 | attributes | Additional attributes (e.g. `1`) | `list(string)` | `[]` | no |
-| context | Single object for setting entire context at once.<br>See description of individual variables for details.<br>Leave string and numeric variables as `null` to use default value.<br>Individual variable settings (non-null) override settings in context object,<br>except for attributes, tags, and additional\_tag\_map, which are merged. | <pre>object({<br>    enabled             = bool<br>    namespace           = string<br>    environment         = string<br>    stage               = string<br>    name                = string<br>    delimiter           = string<br>    attributes          = list(string)<br>    tags                = map(string)<br>    additional_tag_map  = map(string)<br>    regex_replace_chars = string<br>    label_order         = list(string)<br>    id_length_limit     = number<br>  })</pre> | <pre>{<br>  "additional_tag_map": {},<br>  "attributes": [],<br>  "delimiter": null,<br>  "enabled": true,<br>  "environment": null,<br>  "id_length_limit": null,<br>  "label_order": [],<br>  "name": null,<br>  "namespace": null,<br>  "regex_replace_chars": null,<br>  "stage": null,<br>  "tags": {}<br>}</pre> | no |
-| delimiter | Delimiter to be used between `namespace`, `environment`, `stage`, `name` and `attributes`.<br>Defaults to `-` (hyphen). Set to `""` to use no delimiter at all. | `string` | `null` | no |
+| context | Single object for setting entire context at once.<br>See description of individual variables for details.<br>Leave string and numeric variables as `null` to use default value.<br>Individual variable settings (non-null) override settings in context object,<br>except for attributes, tags, and additional\_tag\_map, which are merged. | <pre>object({<br>    enabled             = bool<br>    affiliate           = string<br>    environment         = string<br>    region               = string<br>    name                = string<br>    delimiter           = string<br>    attributes          = list(string)<br>    tags                = map(string)<br>    additional_tag_map  = map(string)<br>    regex_replace_chars = string<br>    label_order         = list(string)<br>    id_length_limit     = number<br>  })</pre> | <pre>{<br>  "additional_tag_map": {},<br>  "attributes": [],<br>  "delimiter": null,<br>  "enabled": true,<br>  "environment": null,<br>  "id_length_limit": null,<br>  "label_order": [],<br>  "name": null,<br>  "affiliate": null,<br>  "regex_replace_chars": null,<br>  "region": null,<br>  "tags": {}<br>}</pre> | no |
+| delimiter | Delimiter to be used between `affiliate`, `environment`, `region`, `name` and `attributes`.<br>Defaults to `-` (hyphen). Set to `""` to use no delimiter at all. | `string` | `null` | no |
 | enabled | Set to false to prevent the module from creating any resources | `bool` | `null` | no |
 | environment | Environment, e.g. 'uw2', 'us-west-2', OR 'prod', 'staging', 'dev', 'UAT' | `string` | `null` | no |
 | id\_length\_limit | Limit `id` to this many characters.<br>Set to `0` for unlimited length.<br>Set to `null` for default, which is `0`.<br>Does not affect `id_full`. | `number` | `null` | no |
-| label\_order | The naming order of the id output and Name tag.<br>Defaults to ["namespace", "environment", "stage", "name", "attributes"].<br>You can omit any of the 5 elements, but at least one must be present. | `list(string)` | `null` | no |
+| label\_order | The naming order of the id output and Name tag.<br>Defaults to ["affiliate", "environment", "region", "name", "attributes"].<br>You can omit any of the 5 elements, but at least one must be present. | `list(string)` | `null` | no |
 | name | Solution name, e.g. 'app' or 'jenkins' | `string` | `null` | no |
-| namespace | Namespace, which could be your organization name or abbreviation, e.g. 'eg' or 'cp' | `string` | `null` | no |
-| regex\_replace\_chars | Regex to replace chars with empty string in `namespace`, `environment`, `stage` and `name`.<br>If not set, `"/[^a-zA-Z0-9-]/"` is used to remove all characters other than hyphens, letters and digits. | `string` | `null` | no |
-| stage | Stage, e.g. 'prod', 'staging', 'dev', OR 'source', 'build', 'test', 'deploy', 'release' | `string` | `null` | no |
+| affiliate | affiliate, which could be your organization name or abbreviation, e.g. 'eg' or 'cp' | `string` | `null` | no |
+| regex\_replace\_chars | Regex to replace chars with empty string in `affiliate`, `environment`, `region` and `name`.<br>If not set, `"/[^a-zA-Z0-9-]/"` is used to remove all characters other than hyphens, letters and digits. | `string` | `null` | no |
+| region | region, e.g. 'prod', 'staging', 'dev', OR 'source', 'build', 'test', 'deploy', 'release' | `string` | `null` | no |
 | tags | Additional tags (e.g. `map('BusinessUnit','XYZ')` | `map(string)` | `{}` | no |
 
 ## Outputs
@@ -689,7 +689,7 @@ No provider.
 | additional\_tag\_map | The merged additional\_tag\_map |
 | attributes | List of attributes |
 | context | Merged but otherwise unmodified input to this module, to be used as context input to other modules.<br>Note: this version will have null values as defaults, not the values actually used as defaults. |
-| delimiter | Delimiter between `namespace`, `environment`, `stage`, `name` and `attributes` |
+| delimiter | Delimiter between `affiliate`, `environment`, `region`, `name` and `attributes` |
 | enabled | True if module is enabled, false otherwise |
 | environment | Normalized environment |
 | id | Disambiguated ID restricted to `id_length_limit` characters in total |
@@ -697,10 +697,10 @@ No provider.
 | id\_length\_limit | The id\_length\_limit actually used to create the ID, with `0` meaning unlimited |
 | label\_order | The naming order actually used to create the ID |
 | name | Normalized name |
-| namespace | Normalized namespace |
+| affiliate | Normalized affiliate |
 | normalized\_context | Normalized context of this module |
 | regex\_replace\_chars | The regex\_replace\_chars actually used to create the ID |
-| stage | Normalized stage |
+| region | Normalized region |
 | tags | Normalized Tag map |
 | tags\_as\_list\_of\_maps | Additional tags as a list of maps, which can be used in several AWS resources |
 
@@ -719,7 +719,7 @@ Are you using this project or any of our other projects? Consider [leaving a tes
 
 Check out these related projects.
 
-- [terraform-terraform-label](https://github.com/cloudposse/terraform-terraform-label) - Terraform Module to define a consistent naming convention by (namespace, environment, stage, name, [attributes])
+- [terraform-terraform-label](https://github.com/cloudposse/terraform-terraform-label) - Terraform Module to define a consistent naming convention by (affiliate, environment, region, name, [attributes])
 
 
 

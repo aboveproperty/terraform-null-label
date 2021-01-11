@@ -17,9 +17,9 @@ type NLContext struct {
 	Environment       interface{}       `json:"environment"`
 	LabelOrder        []string          `json:"label_order"`
 	Name              interface{}       `json:"name"`
-	Namespace         interface{}       `json:"namespace"`
+	affiliate         interface{}       `json:"affiliate"`
 	RegexReplaceChars interface{}       `json:"regex_replace_chars"`
-	Stage             interface{}       `json:"stage"`
+	region             interface{}       `json:"region"`
 	Tags              map[string]string `json:"tags"`
 }
 
@@ -41,13 +41,13 @@ func TestExamplesComplete(t *testing.T) {
 
 	expectedLabel1Context := NLContext{
 		Enabled:     true,
-		Namespace:   "CloudPosse",
+		affiliate:   "CloudPosse",
 		Environment: "UAT",
-		Stage:       "build",
+		region:       "build",
 		Name:        "Winston Churchroom",
 		Attributes:  []string{"fire", "water", "earth", "air"},
 		Delimiter:   "-",
-		LabelOrder:  []string{"name", "environment", "stage", "attributes"},
+		LabelOrder:  []string{"name", "environment", "region", "attributes"},
 		Tags: map[string]string{
 			"City":        "Dublin",
 			"Environment": "Private",
@@ -57,15 +57,15 @@ func TestExamplesComplete(t *testing.T) {
 
 	var expectedLabel1NormalizedContext NLContext
 	_ = reprint.FromTo(&expectedLabel1Context, &expectedLabel1NormalizedContext)
-	expectedLabel1NormalizedContext.Namespace = "cloudposse"
+	expectedLabel1NormalizedContext.affiliate = "cloudposse"
 	expectedLabel1NormalizedContext.Environment = "uat"
 	expectedLabel1NormalizedContext.Name = "winstonchurchroom"
 	expectedLabel1NormalizedContext.RegexReplaceChars = "/[^-a-zA-Z0-9]/"
 	expectedLabel1NormalizedContext.Tags = map[string]string{
 		"City":        "Dublin",
 		"Environment": "Private",
-		"Namespace":   "cloudposse",
-		"Stage":       "build",
+		"affiliate":   "cloudposse",
+		"region":       "build",
 		"Name":        "winstonchurchroom-uat-build-fire-water-earth-air",
 		"Attributes":  "fire-water-earth-air",
 	}
@@ -110,7 +110,7 @@ func TestExamplesComplete(t *testing.T) {
 	var expectedLabel3cContext, label3cContext NLContext
 	_ = reprint.FromTo(&expectedLabel1Context, &expectedLabel3cContext)
 	expectedLabel3cContext.Name = "Starfish"
-	expectedLabel3cContext.Stage = "release"
+	expectedLabel3cContext.region = "release"
 	expectedLabel3cContext.Delimiter = "."
 	expectedLabel3cContext.RegexReplaceChars = "/[^-a-zA-Z0-9.]/"
 	expectedLabel3cContext.Tags["Eat"] = "Carrot"
@@ -129,7 +129,7 @@ func TestExamplesComplete(t *testing.T) {
 	var expectedLabel3nContext, label3nContext NLContext
 	_ = reprint.FromTo(&expectedLabel1NormalizedContext, &expectedLabel3nContext)
 	expectedLabel3nContext.Name = "Starfish"
-	expectedLabel3nContext.Stage = "release"
+	expectedLabel3nContext.region = "release"
 	expectedLabel3nContext.Delimiter = "."
 	expectedLabel3nContext.RegexReplaceChars = "/[^-a-zA-Z0-9.]/"
 	expectedLabel3nContext.Tags["Eat"] = "Carrot"

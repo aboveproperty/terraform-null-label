@@ -1,13 +1,13 @@
 module "label5" {
   source      = "../../"
   enabled     = false
-  namespace   = "eg"
+  affiliate   = "eg"
   environment = "demo"
   name        = "blue"
   attributes  = ["cluster"]
   delimiter   = "-"
 
-  label_order = ["namespace", "stage", "environment", "attributes"]
+  label_order = ["affiliate", "region", "environment", "attributes"]
 
   tags = {
   }
@@ -17,8 +17,8 @@ output "label5" {
   value = {
     id         = module.label5.id
     name       = module.label5.name
-    namespace  = module.label5.namespace
-    stage      = module.label5.stage
+    affiliate  = module.label5.affiliate
+    region     = module.label5.region
     attributes = module.label5.attributes
     delimiter  = module.label5.delimiter
   }

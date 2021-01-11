@@ -5,8 +5,8 @@ tags:
 - terraform-modules
 - naming-convention
 - name
-- namespace
-- stage
+- affiliate
+- region
 categories:
 - terraform-modules/supported
 license: APACHE2
@@ -20,17 +20,17 @@ badges:
   url: https://slack.cloudposse.com
 related:
 - name: terraform-terraform-label
-  description: Terraform Module to define a consistent naming convention by (namespace,
-    environment, stage, name, [attributes])
+  description: Terraform Module to define a consistent naming convention by (affiliate,
+    environment, region, name, [attributes])
   url: https://github.com/cloudposse/terraform-terraform-label
 description: |-
   Terraform module designed to generate consistent names and tags for resources. Use `terraform-null-label` to implement a strict naming convention.
 
-  This module generates names using the following convention by default: `{namespace}-{environment}-{stage}-{name}-{attributes}`.
+  This module generates names using the following convention by default: `{affiliate}-{environment}-{region}-{name}-{attributes}`.
   However, it is highly configurable. The delimiter (e.g. `-`) is configurable. Each label item is optional (although you must provide at least one).
-  So if you prefer the term `stage` to `environment`
-  you can exclude environment and the label `id` will look like `{namespace}-{stage}-{name}-{attributes}`.
-  If attributes are excluded but `stage` and `environment` are included, `id` will look like `{namespace}-{environment}-{stage}-{name}`.
+  So if you prefer the term `region` to `environment`
+  you can exclude environment and the label `id` will look like `{affiliate}-{region}-{name}-{attributes}`.
+  If attributes are excluded but `region` and `environment` are included, `id` will look like `{affiliate}-{environment}-{region}-{name}`.
   If you want the attributes in a different order, you can specify that, too, with the `label_order` list.
   You can set a maximum length for the name, and the module will create a unique name that fits within that length.
 
@@ -68,8 +68,8 @@ usage: |-
   ```hcl
   module "eg_prod_bastion_label" {
     source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=master"
-    namespace  = "eg"
-    stage      = "prod"
+    affiliate  = "eg"
+    region      = "prod"
     name       = "bastion"
     attributes = ["public"]
     delimiter  = "-"
@@ -81,7 +81,7 @@ usage: |-
   }
   ```
 
-  This will create an `id` with the value of `eg-prod-bastion-public` because when generating `id`, the default order is `namespace`, `environment`, `stage`,  `name`, `attributes`
+  This will create an `id` with the value of `eg-prod-bastion-public` because when generating `id`, the default order is `affiliate`, `environment`, `region`,  `name`, `attributes`
   (you can override it by using the `label_order` variable, see [Advanced Example 3](#advanced-example-3)).
 
   Now reference the label when creating an instance:
@@ -119,8 +119,8 @@ usage: |-
   ```hcl
   module "eg_prod_bastion_abc_label" {
     source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=master"
-    namespace  = "eg"
-    stage      = "prod"
+    affiliate  = "eg"
+    region      = "prod"
     name       = "bastion"
     attributes = ["abc"]
     delimiter  = "-"
@@ -150,8 +150,8 @@ usage: |-
 
   module "eg_prod_bastion_xyz_label" {
     source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=master"
-    namespace  = "eg"
-    stage      = "prod"
+    affiliate  = "eg"
+    region      = "prod"
     name       = "bastion"
     attributes = ["xyz"]
     delimiter  = "-"
@@ -193,17 +193,17 @@ usage: |-
       {
           key = Name,
           propagate_at_launch = 1,
-          value = namespace-stage-name
+          value = affiliate-region-name
       },
       {
-          key = Namespace,
+          key = affiliate,
           propagate_at_launch = 1,
-          value = namespace
+          value = affiliate
       },
       {
-          key = Stage,
+          key = region,
           propagate_at_launch = 1,
-          value = stage
+          value = region
       }
   ]
   ```
@@ -216,8 +216,8 @@ usage: |-
   ################################
   module "label" {
     source    = "../../"
-    namespace = "cp"
-    stage     = "prod"
+    affiliate = "cp"
+    region     = "prod"
     name      = "app"
 
     tags = {
@@ -288,14 +288,14 @@ usage: |-
   ```hcl
   module "label1" {
     source      = "git::https://github.com/cloudposse/terraform-null-label.git?ref=master"
-    namespace   = "CloudPosse"
+    affiliate   = "CloudPosse"
     environment = "UAT"
-    stage       = "build"
+    region       = "build"
     name        = "Winston Churchroom"
     attributes  = ["fire", "water", "earth", "air"]
     delimiter   = "-"
 
-    label_order = ["name", "environment", "stage", "attributes"]
+    label_order = ["name", "environment", "region", "attributes"]
 
     tags = {
       "City"        = "Dublin"
@@ -307,7 +307,7 @@ usage: |-
     source    = "git::https://github.com/cloudposse/terraform-null-label.git?ref=master"
     context   = module.label1.context
     name      = "Charlie"
-    stage     = "test"
+    region     = "test"
     delimiter = "+"
 
     tags = {
@@ -319,7 +319,7 @@ usage: |-
   module "label3" {
     source    = "git::https://github.com/cloudposse/terraform-null-label.git?ref=master"
     name      = "Starfish"
-    stage     = "release"
+    region     = "release"
     context   = module.label1.context
     delimiter = "."
 
@@ -343,8 +343,8 @@ usage: |-
     "delimiter" = "-"
     "id" = "winstonchurchroom-uat-build-fire-water-earth-air"
     "name" = "winstonchurchroom"
-    "namespace" = "cloudposse"
-    "stage" = "build"
+    "affiliate" = "cloudposse"
+    "region" = "build"
   }
   label1_context = {
     "additional_tag_map" = {}
@@ -360,12 +360,12 @@ usage: |-
     "label_order" = [
       "name",
       "environment",
-      "stage",
+      "region",
       "attributes",
     ]
     "name" = "Winston Churchroom"
-    "namespace" = "CloudPosse"
-    "stage" = "build"
+    "affiliate" = "CloudPosse"
+    "region" = "build"
     "tags" = {
       "City" = "Dublin"
       "Environment" = "Private"
@@ -386,20 +386,20 @@ usage: |-
     "label_order" = [
       "name",
       "environment",
-      "stage",
+      "region",
       "attributes",
     ]
     "name" = "winstonchurchroom"
-    "namespace" = "cloudposse"
+    "affiliate" = "cloudposse"
     "regex_replace_chars" = "/[^-a-zA-Z0-9]/"
-    "stage" = "build"
+    "region" = "build"
     "tags" = {
       "Attributes" = "fire-water-earth-air"
       "City" = "Dublin"
       "Environment" = "Private"
       "Name" = "winstonchurchroom-uat-build-fire-water-earth-air"
-      "Namespace" = "cloudposse"
-      "Stage" = "build"
+      "affiliate" = "cloudposse"
+      "region" = "build"
     }
   }
   label1_tags = {
@@ -407,8 +407,8 @@ usage: |-
     "City" = "Dublin"
     "Environment" = "Private"
     "Name" = "winstonchurchroom-uat-build-fire-water-earth-air"
-    "Namespace" = "cloudposse"
-    "Stage" = "build"
+    "affiliate" = "cloudposse"
+    "region" = "build"
   }
   label2 = {
     "attributes" = [
@@ -420,8 +420,8 @@ usage: |-
     "delimiter" = "+"
     "id" = "charlie+uat+test+fire+water+earth+air"
     "name" = "charlie"
-    "namespace" = "cloudposse"
-    "stage" = "test"
+    "affiliate" = "cloudposse"
+    "region" = "test"
   }
   label2_context = {
     "additional_tag_map" = {
@@ -440,13 +440,13 @@ usage: |-
     "label_order" = [
       "name",
       "environment",
-      "stage",
+      "region",
       "attributes",
     ]
     "name" = "Charlie"
-    "namespace" = "CloudPosse"
+    "affiliate" = "CloudPosse"
     "regex_replace_chars" = "/[^a-zA-Z0-9-+]/"
-    "stage" = "test"
+    "region" = "test"
     "tags" = {
       "City" = "London"
       "Environment" = "Public"
@@ -457,8 +457,8 @@ usage: |-
     "City" = "London"
     "Environment" = "Public"
     "Name" = "charlie+uat+test+fire+water+earth+air"
-    "Namespace" = "cloudposse"
-    "Stage" = "test"
+    "affiliate" = "cloudposse"
+    "region" = "test"
   }
   label2_tags_as_list_of_maps = [
     {
@@ -487,13 +487,13 @@ usage: |-
     },
     {
       "additional_tag" = "yes"
-      "key" = "Namespace"
+      "key" = "affiliate"
       "propagate_at_launch" = "true"
       "value" = "cloudposse"
     },
     {
       "additional_tag" = "yes"
-      "key" = "Stage"
+      "key" = "region"
       "propagate_at_launch" = "true"
       "value" = "test"
     },
@@ -508,8 +508,8 @@ usage: |-
     "delimiter" = "."
     "id" = "starfish.uat.release.fire.water.earth.air"
     "name" = "starfish"
-    "namespace" = "cloudposse"
-    "stage" = "release"
+    "affiliate" = "cloudposse"
+    "region" = "release"
   }
   label3_context = {
     "additional_tag_map" = {}
@@ -525,13 +525,13 @@ usage: |-
     "label_order" = [
       "name",
       "environment",
-      "stage",
+      "region",
       "attributes",
     ]
     "name" = "Starfish"
-    "namespace" = "CloudPosse"
+    "affiliate" = "CloudPosse"
     "regex_replace_chars" = "/[^-a-zA-Z0-9.]/"
-    "stage" = "release"
+    "region" = "release"
     "tags" = {
       "Animal" = "Rabbit"
       "City" = "Dublin"
@@ -554,13 +554,13 @@ usage: |-
     "label_order" = [
       "name",
       "environment",
-      "stage",
+      "region",
       "attributes",
     ]
     "name" = "starfish"
-    "namespace" = "cloudposse"
+    "affiliate" = "cloudposse"
     "regex_replace_chars" = "/[^-a-zA-Z0-9.]/"
-    "stage" = "release"
+    "region" = "release"
     "tags" = {
       "Animal" = "Rabbit"
       "Attributes" = "fire.water.earth.air"
@@ -568,8 +568,8 @@ usage: |-
       "Eat" = "Carrot"
       "Environment" = "Private"
       "Name" = "starfish.uat.release.fire.water.earth.air"
-      "Namespace" = "cloudposse"
-      "Stage" = "release"
+      "affiliate" = "cloudposse"
+      "region" = "release"
     }
   }
   label3_tags = {
@@ -579,8 +579,8 @@ usage: |-
     "Eat" = "Carrot"
     "Environment" = "Private"
     "Name" = "starfish.uat.release.fire.water.earth.air"
-    "Namespace" = "cloudposse"
-    "Stage" = "release"
+    "affiliate" = "cloudposse"
+    "region" = "release"
   }
 
   ```

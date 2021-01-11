@@ -1,5 +1,5 @@
-namespace = "eg"
-stage     = "prod"
+affiliate = "eg"
+region    = "prod"
 name      = "app"
 
 tags = {
